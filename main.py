@@ -50,26 +50,33 @@ def get_cover(payload):
 def to_discord(payload):
     global last_track
 
+    if not payload.get("playing"):
+        rpc.clear()
+        last_track = None
+        return
+
+
     key = (payload["title"], payload["artist"])
     if key == last_track:
         return
     
     last_track = key
-    start_time, end_time = make_timestamp(payload["currentTime"], payload["duration"])
     cover_url = get_cover(payload)
 
-    rpc.update(
-        name="iseo",
-        details=payload["title"],
-        state=f"{payload['artist']} - {payload['album']}",
-        start=start_time,
-        end=end_time,
-        activity_type=ActivityType.LISTENING,
-        large_image=cover_url or "icon",
-        large_text=payload["album"] if len(payload.get("album", "")) >= 2 else "ISEO",
-        large_url="https://github.com/ttakiwaki/iseo-player"
-
-    )
+    if payload.get("playing"):
+        start_time, end_time = make_timestamp(payload["currentTime"], payload["duration"])
+        rpc.update(
+            name="iseo",
+            details=payload["title"],
+            state=f"{payload['artist']} - {payload['album']}",
+            start=start_time,
+            end=end_time,
+            activity_type=ActivityType.LISTENING,
+            large_image=cover_url or "icon",
+            large_text=payload["album"] if len(payload.get("album", "")) >= 2 else "ISEO",
+            large_url="https://github.com/ttakiwaki/iseo-player"
+    ) 
+    
     print(f"RPC Updated: {payload['title']}")
 
 def cooldown_update(payload):
