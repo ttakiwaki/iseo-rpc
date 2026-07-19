@@ -28,12 +28,6 @@ except:
 pending_timer = None
 last_track = None
 
-def make_timestamp(current_time, duration):
-    now = time.time()
-    start_time = now - current_time
-    end_time = start_time + duration
-    return int(start_time), int(end_time)
-
 # Send data to Discord
 
 def get_cover(payload):
@@ -48,6 +42,7 @@ def get_cover(payload):
     
 
 def to_discord(payload):
+    print(payload)
     global last_track
 
     if not payload.get("playing"):
@@ -57,20 +52,19 @@ def to_discord(payload):
 
 
     key = (payload["title"], payload["artist"])
-    if key == last_track:
+    if key == last_track and not payload.get("looped"):
         return
     
     last_track = key
     cover_url = get_cover(payload)
 
     if payload.get("playing"):
-        start_time, end_time = make_timestamp(payload["currentTime"], payload["duration"])
         rpc.update(
             name="iseo",
             details=payload["title"],
-            state=f"{payload['artist']} - {payload['album']}",
-            start=start_time,
-            end=end_time,
+            state=f"{payload['artist']}",
+            start=payload["startTime"],
+            end=payload["startTime"] + payload["duration"],
             activity_type=ActivityType.LISTENING,
             large_image=cover_url or "icon",
             large_text=payload["album"] if len(payload.get("album", "")) >= 2 else "ISEO",
