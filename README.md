@@ -46,7 +46,7 @@ Runs a small Python server on your machine that listens for track updates from I
    cp .env.example .env
 ```
 
-Fill in your Discord application's client ID. You can create one at [discord.com/developers](https://discord.com/developers/applications). If you wish to have a fallback album cover, you can use the iseo logo provided in the assets folder, and upload it to the 'Rich Presence Art Assets' section. Make sure the name of the asset matches with the name set in main.py (Line 68).
+Fill in your Discord application's client ID. You can create one at [discord.com/developers](https://discord.com/developers/applications). If you wish to have a fallback album cover, you can use the iseo logo provided in the assets folder, and upload it to the 'Rich Presence Art Assets' section. Make sure the name of the asset matches with the name set in main.py (Line 69).
 
 4. Run the server
 
